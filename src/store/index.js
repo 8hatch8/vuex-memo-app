@@ -32,6 +32,12 @@ const store = new Vuex.Store({
     },
     removeList(state, payload) {
       state.lists.splice(payload.listIndex, 1)
+    },
+    addCardToList(state, payload) {
+      state.lists[ payload.listIndex ].cards.push({ body: payload.body })
+    },
+    removeCardFromList(state, payload) {
+      state.lists[ payload.listIndex ].cards.splice(payload.cardIndex, 1)
     }
   },
   actions: { // 非同期処理や外部APIとの通信を実行後、ミューテーションを呼び出す（context.commit）
@@ -41,9 +47,19 @@ const store = new Vuex.Store({
     removeList(ctx,payload) {
       ctx.commit('removeList', payload)
     },
+    addCardToList(ctx, payload) {
+      ctx.commit('addCardToList', payload)
+    },
+    removeCardFromList(ctx, payload) {
+      ctx.commit('removeCardFromList', payload)
+    }
   },
   getters: {
-
+    totalCardCount(state) {
+      let count = 0
+      state.lists.map(list => count += list.cards.length)
+      return count
+    }
   },
   modules: { //ストアインスタンスを分割して管理する場合に使用
   }
