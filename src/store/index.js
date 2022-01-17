@@ -8,35 +8,38 @@ const savedLists = localStorage.getItem('trello-lists')
 const store = new Vuex.Store({
   state: {
     // localStorageは文字列型で保存されるので、取得データをJSON形式に変換
-    lists: savedLists ? JSON.parse(savedLists): [
-      //三項演算子：取得データがなければ以下のデフォルトを表示
-      {
-        title: 'Backlog',
-        cards: [
-          { body: 'English' },
-          { body: 'Math' },
-        ]
-      },
-      {
-        title: 'Todo',
-        cards: [
-          { body: 'Science'}
-        ]
-      },
-      {
-        title: 'Doing',
-        cards: []
-      }
-    ],
+    lists:  
+      // 三項演算子
+      savedLists ? JSON.parse(savedLists): [
+        // ローカルストレージのデータ（savedLists）がなければ以下のデフォルトを返す
+        {
+          title: 'Backlog',
+          cards: [ { body: 'English' }, { body: 'Math' }, ]
+        },
+        {
+          title: 'Todo',
+          cards: [ { body: 'Science'} ]
+        },
+        {
+          title: 'Doing',
+          cards: []
+        }
+      ],
   },
-  mutations: {
-    addlist(state, payload) {
+  mutations: { // stateを変更する
+    addList(state, payload) {
       state.lists.push({ title: payload.title, cards: [] })
     },
+    removeList(state, payload) {
+      state.lists.splice(payload.listIndex, 1)
+    }
   },
-  actions: {
-    addlist(context, payload) {
-      context.commit('addlist', payload)
+  actions: { // 非同期処理や外部APIとの通信を実行後、ミューテーションを呼び出す（context.commit）
+    addList(ctx, payload) {
+      ctx.commit('addList', payload)
+    },
+    removeList(ctx,payload) {
+      ctx.commit('removeList', payload)
     },
   },
   getters: {
@@ -46,9 +49,9 @@ const store = new Vuex.Store({
   }
 })
 
-// データを更新後、localStorageにハッシュ（key, value）を文字列型で保存
 // subscribeはストアのインスタンスメソッドで、mutationの後に呼ばれる
 store.subscribe((mutation, state) => {
+  // データを更新後、localStorageにハッシュ（key, value）を文字列型で保存
   localStorage.setItem('trello-lists', JSON.stringify(state.lists))
 })
 
