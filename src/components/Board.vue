@@ -11,7 +11,8 @@
           :key="item.id"
           :title="item.title"
           :cards="item.cards"
-          :listIndex="index" />
+          :listIndex="index"
+          @change="movingCard" />
       <list-add />
       </div>
     </main>
@@ -24,6 +25,11 @@ import List from './List'
 import { mapState } from 'vuex'
 export default {
   components: { ListAdd, List },
+  methods: {
+    movingCard() {
+      this.$store.dispatch('updateList', {lists: this.lists})
+    }
+  },
   computed: {
     // オブジェクトスプレット演算子でmapStateヘルパー関数を呼び出す
     ...mapState([

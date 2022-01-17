@@ -38,6 +38,9 @@ const store = new Vuex.Store({
     },
     removeCardFromList(state, payload) {
       state.lists[ payload.listIndex ].cards.splice(payload.cardIndex, 1)
+    },
+    updateList(state, payload) {
+      state.lists = payload.lists
     }
   },
   actions: { // 非同期処理や外部APIとの通信を実行後、ミューテーションを呼び出す（context.commit）
@@ -52,6 +55,9 @@ const store = new Vuex.Store({
     },
     removeCardFromList(ctx, payload) {
       ctx.commit('removeCardFromList', payload)
+    },
+    updateList(ctx, payload) {
+      ctx.commit('updateList', payload)
     }
   },
   getters: {
